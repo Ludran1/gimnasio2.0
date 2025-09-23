@@ -141,7 +141,6 @@ export default function ClientesPage() {
                 <td className="py-2 px-4 border">{cliente.nombre}</td>
                 <td className="py-2 px-4 border">{cliente.dni || "-"}</td>
                 <td className="py-2 px-4 border">{cliente.fechaNacimiento || "-"}</td>
-                  <td className="py-2 px-4 border">{(cliente.fechaNacimiento || "-")}</td>
                 <td className="py-2 px-4 border">{cliente.telefono || "-"}</td>
                 <td className="py-2 px-4 border">
                   <input
