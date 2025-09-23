@@ -9,7 +9,10 @@ type Membresia = {
   fecha_inicio: string;
   fecha_fin: string;
   frecuencia?: string;
-  saldoPendiente?: number; // Nuevo campo para saldo pendiente
+  saldoPendiente?: number;
+  metodoPago?: string;
+  tipoPago?: string;
+  montoCuenta?: number;
 };
 
 export default function MembresiasPage() {
@@ -17,7 +20,10 @@ export default function MembresiasPage() {
     cliente_id: "",
     tipo_id: "",
     fecha_inicio: "",
-    saldoPendiente: "", // Nuevo campo en el formulario
+    saldoPendiente: "",
+    metodoPago: "Efectivo", // Predeterminado
+    tipoPago: "Al contado", // Predeterminado
+    montoCuenta: "", // Solo si es "A cuenta"
   });
   const [error, setError] = useState("");
   const [membresias, setMembresias] = useState<Membresia[]>([]);
@@ -40,7 +46,7 @@ export default function MembresiasPage() {
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -66,13 +72,32 @@ export default function MembresiasPage() {
       fecha_fin: fechaFin.toISOString().slice(0,10),
       frecuencia: tipo.frecuencia,
       saldo_pendiente: form.saldoPendiente ? Number(form.saldoPendiente) : 0,
+      metodo_pago: form.metodoPago,
+      tipo_pago: form.tipoPago,
+      monto_cuenta: form.tipoPago === "A cuenta" ? Number(form.montoCuenta) : 0,
     });
     if (insertError) {
       setError("Error al registrar membresía");
       return;
     }
-  setForm({ cliente_id: "", tipo_id: "", fecha_inicio: "", saldoPendiente: "" });
-  setForm({ cliente_id: "", tipo_id: "", fecha_inicio: "", saldoPendiente: "" });
+  setForm({
+    cliente_id: "",
+    tipo_id: "",
+    fecha_inicio: "",
+    saldoPendiente: "",
+    metodoPago: "Efectivo",
+    tipoPago: "Al contado",
+    montoCuenta: ""
+  });
+    setForm({
+      cliente_id: "",
+      tipo_id: "",
+      fecha_inicio: "",
+      saldoPendiente: "",
+      metodoPago: "Efectivo",
+      tipoPago: "Al contado",
+      montoCuenta: ""
+    });
     // Recargar membresías
     const { data } = await supabase.from("membresias").select("*");
     if (data) setMembresias(data);
@@ -123,6 +148,46 @@ export default function MembresiasPage() {
             className="border px-2 py-1 w-full"
           />
         </div>
+        <div className="mb-2">
+          <label className="block mb-1 font-semibold">Método de pago</label>
+          <select
+            name="metodoPago"
+            value={form.metodoPago}
+            onChange={handleChange}
+            className="border px-2 py-1 w-full"
+          >
+            <option value="Efectivo">Efectivo</option>
+            <option value="Transferencia">Transferencia</option>
+            <option value="Tarjeta">Tarjeta</option>
+          </select>
+        </div>
+        <div className="mb-2">
+          <label className="block mb-1 font-semibold">Tipo de pago</label>
+          <select
+            name="tipoPago"
+            value={form.tipoPago}
+            onChange={handleChange}
+            className="border px-2 py-1 w-full"
+          >
+            <option value="Al contado">Al contado</option>
+            <option value="A cuenta">A cuenta</option>
+          </select>
+        </div>
+        {form.tipoPago === "A cuenta" && (
+          <div className="mb-2">
+            <label className="block mb-1 font-semibold">Monto a cuenta</label>
+            <input
+              type="number"
+              name="montoCuenta"
+              value={form.montoCuenta}
+              onChange={handleChange}
+              min="0"
+              step="0.01"
+              className="border px-2 py-1 w-full"
+              placeholder="Monto que deja a cuenta"
+            />
+          </div>
+        )}
         <div className="mb-2">
           <label className="block mb-1 font-semibold">Saldo pendiente</label>
           <input
