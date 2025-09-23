@@ -10,7 +10,7 @@ type Cliente = {
   dni?: string;
   fechaNacimiento?: string;
   telefono?: string;
-  saldoPendiente: number;
+  // saldoPendiente eliminado, ahora está en membresías
 };
 
 export default function ClientesPage() {
@@ -50,7 +50,6 @@ export default function ClientesPage() {
       dni: form.dni || null,
       fecha_nacimiento: form.fechaNacimiento || null,
       telefono: form.telefono || null,
-      saldo_pendiente: 0,
     });
     if (insertError) {
       setError("Error al registrar cliente");
@@ -63,9 +62,7 @@ export default function ClientesPage() {
   };
 
   async function actualizarSaldo(id: string, nuevoSaldo: number) {
-    await supabase.from("clientes").update({ saldo_pendiente: nuevoSaldo }).eq("id", id);
-    const { data } = await supabase.from("clientes").select("*");
-    if (data) setClientes(data);
+  // Función eliminada, saldo pendiente ahora se gestiona en membresías
   }
 
   return (
@@ -123,17 +120,16 @@ export default function ClientesPage() {
             <th className="py-2 px-4 border">DNI</th>
             <th className="py-2 px-4 border">Fecha de nacimiento</th>
             <th className="py-2 px-4 border">Celular</th>
-            <th className="py-2 px-4 border">Saldo Pendiente</th>
           </tr>
         </thead>
         <tbody>
           {loading ? (
             <tr>
-              <td colSpan={5} className="py-4 px-4 text-center">Cargando...</td>
+              <td colSpan={4} className="py-4 px-4 text-center">Cargando...</td>
             </tr>
           ) : clientes.length === 0 ? (
             <tr>
-              <td colSpan={5} className="py-4 px-4 text-center">No hay clientes registrados.</td>
+              <td colSpan={4} className="py-4 px-4 text-center">No hay clientes registrados.</td>
             </tr>
           ) : (
             clientes.map(cliente => (
@@ -142,16 +138,6 @@ export default function ClientesPage() {
                 <td className="py-2 px-4 border">{cliente.dni || "-"}</td>
                 <td className="py-2 px-4 border">{cliente.fechaNacimiento || "-"}</td>
                 <td className="py-2 px-4 border">{cliente.telefono || "-"}</td>
-                <td className="py-2 px-4 border">
-                  <input
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    defaultValue={cliente.saldoPendiente}
-                    onBlur={e => actualizarSaldo(cliente.id, parseFloat(e.target.value))}
-                    className="border px-2 py-1 w-24"
-                  />
-                </td>
               </tr>
             ))
           )}

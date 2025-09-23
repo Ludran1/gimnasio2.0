@@ -9,6 +9,7 @@ type Membresia = {
   fecha_inicio: string;
   fecha_fin: string;
   frecuencia?: string;
+  saldoPendiente?: number; // Nuevo campo para saldo pendiente
 };
 
 export default function MembresiasPage() {
@@ -16,6 +17,7 @@ export default function MembresiasPage() {
     cliente_id: "",
     tipo_id: "",
     fecha_inicio: "",
+    saldoPendiente: "", // Nuevo campo en el formulario
   });
   const [error, setError] = useState("");
   const [membresias, setMembresias] = useState<Membresia[]>([]);
@@ -63,12 +65,14 @@ export default function MembresiasPage() {
       fecha_inicio: form.fecha_inicio,
       fecha_fin: fechaFin.toISOString().slice(0,10),
       frecuencia: tipo.frecuencia,
+      saldo_pendiente: form.saldoPendiente ? Number(form.saldoPendiente) : 0,
     });
     if (insertError) {
       setError("Error al registrar membresía");
       return;
     }
-    setForm({ cliente_id: "", tipo_id: "", fecha_inicio: "" });
+  setForm({ cliente_id: "", tipo_id: "", fecha_inicio: "", saldoPendiente: "" });
+  setForm({ cliente_id: "", tipo_id: "", fecha_inicio: "", saldoPendiente: "" });
     // Recargar membresías
     const { data } = await supabase.from("membresias").select("*");
     if (data) setMembresias(data);
@@ -119,6 +123,19 @@ export default function MembresiasPage() {
             className="border px-2 py-1 w-full"
           />
         </div>
+        <div className="mb-2">
+          <label className="block mb-1 font-semibold">Saldo pendiente</label>
+          <input
+            type="number"
+            name="saldoPendiente"
+            value={form.saldoPendiente}
+            onChange={handleChange}
+            min="0"
+            step="0.01"
+            className="border px-2 py-1 w-full"
+            placeholder="Saldo pendiente del cliente"
+          />
+        </div>
         {/* La fecha fin se calcula automáticamente */}
         {error && <div className="text-red-600 mb-2">{error}</div>}
         <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">Registrar membresía</button>
@@ -131,16 +148,17 @@ export default function MembresiasPage() {
             <th className="py-2 px-4 border">Frecuencia</th>
             <th className="py-2 px-4 border">Fecha inicio</th>
             <th className="py-2 px-4 border">Fecha fin</th>
+            <th className="py-2 px-4 border">Saldo pendiente</th>
           </tr>
         </thead>
         <tbody>
           {loading ? (
             <tr>
-              <td colSpan={4} className="py-4 px-4 text-center">Cargando...</td>
+              <td colSpan={6} className="py-4 px-4 text-center">Cargando...</td>
             </tr>
           ) : membresias.length === 0 ? (
             <tr>
-              <td colSpan={4} className="py-4 px-4 text-center">No hay membresías registradas.</td>
+              <td colSpan={6} className="py-4 px-4 text-center">No hay membresías registradas.</td>
             </tr>
           ) : (
             membresias.map(m => (
@@ -170,6 +188,20 @@ export default function MembresiasPage() {
                       if (data) setMembresias(data);
                     }}
                     className="border px-2 py-1 w-32"
+                  />
+                </td>
+                <td className="py-2 px-4 border">
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={m.saldoPendiente ?? 0}
+                    onBlur={async e => {
+                      await supabase.from("membresias").update({ saldo_pendiente: parseFloat(e.target.value) }).eq("id", m.id);
+                      const { data } = await supabase.from("membresias").select("*");
+                      if (data) setMembresias(data);
+                    }}
+                    className="border px-2 py-1 w-24"
                   />
                 </td>
                 <td className="py-2 px-4 border">
