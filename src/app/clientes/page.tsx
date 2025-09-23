@@ -147,8 +147,8 @@ export default function ClientesPage() {
                     type="number"
                     min="0"
                     step="0.01"
-                    value={cliente.saldoPendiente}
-                    onChange={e => actualizarSaldo(cliente.id, parseFloat(e.target.value))}
+                    defaultValue={cliente.saldoPendiente}
+                    onBlur={e => actualizarSaldo(cliente.id, parseFloat(e.target.value))}
                     className="border px-2 py-1 w-24"
                   />
                 </td>
