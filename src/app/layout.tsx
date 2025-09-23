@@ -10,6 +10,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Link href="/membresias">Membresías</Link>
           <Link href="/entradas">Entradas</Link>
           <Link href="/estadisticas">Estadísticas</Link>
+          <Link href="/tipos-membresia">Tipos de Membresía</Link>
         </nav>
         <div className="container mx-auto mt-8">
           {children}
