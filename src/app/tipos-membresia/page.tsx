@@ -141,7 +141,7 @@ export default function TiposMembresiaPage() {
                 <td className="py-2 px-4 border">{tipo.nombre}</td>
                 <td className="py-2 px-4 border">{tipo.duracion_dias}</td>
                 <td className="py-2 px-4 border">{tipo.frecuencia}</td>
-                <td className="py-2 px-4 border">${tipo.precio?.toFixed(2) || "0.00"}</td>
+                <td className="py-2 px-4 border">S/ {tipo.precio?.toFixed(2) || "0.00"}</td>
                 <td className="py-2 px-4 border">
                   <button className="bg-red-600 text-white px-2 py-1 rounded" onClick={() => eliminarTipo(tipo.id)}>
                     Eliminar

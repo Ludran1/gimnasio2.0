@@ -117,6 +117,17 @@ export default function MembresiasPage() {
             ))}
           </select>
         </div>
+        {/* Mostrar precio del tipo seleccionado */}
+        {form.tipo_id && (
+          <div className="mb-2 p-3 bg-blue-50 border border-blue-200 rounded">
+            <div className="flex justify-between items-center">
+              <span className="font-semibold text-blue-800">Precio de la membresía:</span>
+              <span className="text-xl font-bold text-blue-900">
+                S/ {tipos.find(t => t.id === form.tipo_id)?.precio?.toFixed(2) || "0.00"}
+              </span>
+            </div>
+          </div>
+        )}
         <div className="mb-2">
           <label className="block mb-1 font-semibold">Tipo de membresía *</label>
           <select
@@ -128,7 +139,7 @@ export default function MembresiasPage() {
           >
             <option value="">Selecciona un tipo</option>
             {tipos.map(t => (
-              <option key={t.id} value={t.id}>{t.nombre} ({t.duracion_dias} días, {t.frecuencia}) - ${t.precio?.toFixed(2) || "0.00"}</option>
+              <option key={t.id} value={t.id}>{t.nombre} ({t.duracion_dias} días, {t.frecuencia}) - S/ {t.precio?.toFixed(2) || "0.00"}</option>
             ))}
           </select>
         </div>
