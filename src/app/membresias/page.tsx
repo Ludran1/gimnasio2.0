@@ -55,7 +55,16 @@ export default function MembresiasPage() {
       setError("Todos los campos son obligatorios.");
       return;
     }
-    setError("");
+    // Validaciones adicionales
+    if (form.tipoPago === "A cuenta" && (!form.montoCuenta || Number(form.montoCuenta) <= 0)) {
+      setError("Debe especificar un monto válido para el pago a cuenta.");
+      return;
+    }
+    
+    if (form.saldoPendiente && Number(form.saldoPendiente) < 0) {
+      setError("El saldo pendiente no puede ser negativo.");
+      return;
+    }
     const tipo = tipos.find(t => t.id === form.tipo_id);
     if (!tipo) {
       setError("Tipo de membresía no válido.");
@@ -76,19 +85,14 @@ export default function MembresiasPage() {
       tipo_pago: form.tipoPago,
       monto_cuenta: form.tipoPago === "A cuenta" ? Number(form.montoCuenta) : 0,
     });
+    
     if (insertError) {
-      setError("Error al registrar membresía");
+      console.error("Error detallado:", insertError);
+      setError(`Error al registrar membresía: ${insertError.message}`);
       return;
     }
-  setForm({
-    cliente_id: "",
-    tipo_id: "",
-    fecha_inicio: "",
-    saldoPendiente: "",
-    metodoPago: "Efectivo",
-    tipoPago: "Al contado",
-    montoCuenta: ""
-  });
+    
+    // Limpiar formulario solo si el insert fue exitoso
     setForm({
       cliente_id: "",
       tipo_id: "",

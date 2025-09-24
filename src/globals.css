@@ -6,4 +6,27 @@
 body {
   margin: 0;
   font-family: sans-serif;
+  background-color: white;
+  color: black;
+}
+
+/* Asegurar que los elementos tengan colores por defecto */
+* {
+  color: inherit;
+}
+
+/* Estilos para formularios */
+input, select, textarea {
+  color: black;
+  background-color: white;
+}
+
+/* Estilos para tablas */
+table {
+  background-color: white;
+  color: black;
+}
+
+th, td {
+  color: black;
 }
