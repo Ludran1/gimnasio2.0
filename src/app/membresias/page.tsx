@@ -9,10 +9,10 @@ type Membresia = {
   fecha_inicio: string;
   fecha_fin: string;
   frecuencia?: string;
-  saldoPendiente?: number;
-  metodoPago?: string;
-  tipoPago?: string;
-  montoCuenta?: number;
+  saldo_pendiente?: number; // Cambiado a snake_case para coincidir con Supabase
+  metodo_pago?: string;
+  tipo_pago?: string;
+  monto_cuenta?: number;
 };
 
 export default function MembresiasPage() {
@@ -264,7 +264,7 @@ export default function MembresiasPage() {
                     type="number"
                     min="0"
                     step="0.01"
-                    value={m.saldoPendiente ?? 0}
+                    value={m.saldo_pendiente ?? 0}
                     onBlur={async e => {
                       await supabase.from("membresias").update({ saldo_pendiente: parseFloat(e.target.value) }).eq("id", m.id);
                       const { data } = await supabase.from("membresias").select("*");
