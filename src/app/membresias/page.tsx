@@ -128,7 +128,7 @@ export default function MembresiasPage() {
           >
             <option value="">Selecciona un tipo</option>
             {tipos.map(t => (
-              <option key={t.id} value={t.id}>{t.nombre} ({t.duracion_dias} días, {t.frecuencia})</option>
+              <option key={t.id} value={t.id}>{t.nombre} ({t.duracion_dias} días, {t.frecuencia}) - ${t.precio?.toFixed(2) || "0.00"}</option>
             ))}
           </select>
         </div>

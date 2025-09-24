@@ -8,10 +8,11 @@ interface TipoMembresia {
   nombre: string;
   duracion_dias: number;
   frecuencia: string;
+  precio: number;
 }
 
 export default function TiposMembresiaPage() {
-  const [form, setForm] = useState({ nombre: "", duracion_dias: 30, frecuencia: "diario" });
+  const [form, setForm] = useState({ nombre: "", duracion_dias: 30, frecuencia: "diario", precio: 0 });
   const [error, setError] = useState("");
   const [tipos, setTipos] = useState<TipoMembresia[]>([]);
   const [loading, setLoading] = useState(false);
@@ -41,12 +42,13 @@ export default function TiposMembresiaPage() {
       nombre: form.nombre,
       duracion_dias: Number(form.duracion_dias),
       frecuencia: form.frecuencia,
+      precio: Number(form.precio),
     });
     if (insertError) {
       setError("Error al registrar tipo de membresía");
       return;
     }
-    setForm({ nombre: "", duracion_dias: 30, frecuencia: "diario" });
+    setForm({ nombre: "", duracion_dias: 30, frecuencia: "diario", precio: 0 });
     const { data } = await supabase.from("tipos_membresia").select("*");
     if (data) setTipos(data);
   };
@@ -97,6 +99,20 @@ export default function TiposMembresiaPage() {
             <option value="interdiario">Interdiario</option>
           </select>
         </div>
+        <div className="mb-2">
+          <label className="block mb-1 font-semibold">Precio *</label>
+          <input
+            type="number"
+            name="precio"
+            value={form.precio}
+            onChange={handleChange}
+            required
+            min={0}
+            step="0.01"
+            className="border px-2 py-1 w-full"
+            placeholder="Precio de la membresía"
+          />
+        </div>
         {error && <div className="text-red-600 mb-2">{error}</div>}
         <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">Registrar tipo</button>
       </form>
@@ -106,17 +122,18 @@ export default function TiposMembresiaPage() {
             <th className="py-2 px-4 border">Nombre</th>
             <th className="py-2 px-4 border">Duración (días)</th>
             <th className="py-2 px-4 border">Frecuencia</th>
+            <th className="py-2 px-4 border">Precio</th>
             <th className="py-2 px-4 border">Acciones</th>
           </tr>
         </thead>
         <tbody>
           {loading ? (
             <tr>
-              <td colSpan={4} className="py-4 px-4 text-center">Cargando...</td>
+              <td colSpan={5} className="py-4 px-4 text-center">Cargando...</td>
             </tr>
           ) : tipos.length === 0 ? (
             <tr>
-              <td colSpan={4} className="py-4 px-4 text-center">No hay tipos registrados.</td>
+              <td colSpan={5} className="py-4 px-4 text-center">No hay tipos registrados.</td>
             </tr>
           ) : (
             tipos.map(tipo => (
@@ -124,6 +141,7 @@ export default function TiposMembresiaPage() {
                 <td className="py-2 px-4 border">{tipo.nombre}</td>
                 <td className="py-2 px-4 border">{tipo.duracion_dias}</td>
                 <td className="py-2 px-4 border">{tipo.frecuencia}</td>
+                <td className="py-2 px-4 border">${tipo.precio?.toFixed(2) || "0.00"}</td>
                 <td className="py-2 px-4 border">
                   <button className="bg-red-600 text-white px-2 py-1 rounded" onClick={() => eliminarTipo(tipo.id)}>
                     Eliminar
